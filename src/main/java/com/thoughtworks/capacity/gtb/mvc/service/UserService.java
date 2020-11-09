@@ -1,6 +1,7 @@
 package com.thoughtworks.capacity.gtb.mvc.service;
 
 import com.thoughtworks.capacity.gtb.mvc.dao.User;
+import com.thoughtworks.capacity.gtb.mvc.exception.UserExistedException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +20,15 @@ public class UserService {
     }
 
     public void register(User user){
+        List<User> userList = userMap.values().stream()
+                .filter(userExisted ->
+                        userExisted.getUsername()
+                                .equals(
+                                        user.getUsername()))
+                .collect(Collectors.toList());
+        if (userList.size() >= 1){
+            throw new UserExistedException("用户已存在");
+        }
         int userId = biggestId+1;
         user.setId(userId);
         userMap.put(userId, user);
