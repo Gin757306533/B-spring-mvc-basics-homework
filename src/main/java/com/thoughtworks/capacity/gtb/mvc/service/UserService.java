@@ -2,6 +2,7 @@ package com.thoughtworks.capacity.gtb.mvc.service;
 
 import com.thoughtworks.capacity.gtb.mvc.dao.User;
 import com.thoughtworks.capacity.gtb.mvc.exception.UserExistedException;
+import com.thoughtworks.capacity.gtb.mvc.exception.UserNameException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -36,6 +37,9 @@ public class UserService {
     }
 
     public User login(String username, String password){
+        if(username.length() < 3 || username.length() > 10){
+            throw new UserNameException("用户名不合法");
+        }
         List<User> userList = new ArrayList(userMap.values().stream()
                 .filter(
                         user -> user.getUsername().equals(username))
